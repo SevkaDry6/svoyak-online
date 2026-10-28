@@ -59,7 +59,12 @@ const questionPool=[
 ["Игры",400,"Как называется королевская битва от разработчиков Apex Legends?","Apex Legends"],
 ["Игры",400,"Как зовут главного героя серии игр Halo?","Мастер Чиф"]
 ];
-let questions=[],client=null,channel=null,roomCode="",nick="",isHost=false,players={},state={scores:{},used:[],active:null,buzz:null,started:false},ready=false;\nconst questionSets=[questions.map(q=>q.slice())];\nfunction shuffleQuestions(){for(let i=questions.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[questions[i],questions[j]]=[questions[j],questions[i]]}}
+let questions=[],client=null,channel=null,roomCode="",nick="",isHost=false,players={},state={scores:{},used:[],active:null,buzz:null,started:false},ready=false;
+function shuffleQuestions(){
+ const cats=['География','Кино','Музыка','Наука','Игры'],values=[100,200,300,400],picked=[];
+ for(const cat of cats)for(const value of values){const options=questionPool.filter(q=>q[0]===cat&&q[1]===value);picked.push(options[Math.floor(Math.random()*options.length)].slice());}
+ questions.splice(0,questions.length,...picked);
+}
 const setStatus=t=>$("status").textContent=t;
 function code(){return Math.random().toString(36).slice(2,8).toUpperCase()}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}

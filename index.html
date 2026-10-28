@@ -19,14 +19,14 @@ const questions=[
 ["Наука",100,"Какая планета известна как Красная планета?","Марс"],["Наука",200,"Сколько ног у паука?","Восемь"],["Наука",300,"Как называется процесс получения энергии растением с помощью света?","Фотосинтез"],["Наука",400,"Какой газ растения поглощают при фотосинтезе?","Углекислый газ"],
 ["Игры",100,"Какой герой Nintendo носит красную кепку и усы?","Марио"],["Игры",200,"В какой игре строят из блоков и исследуют мир?","Minecraft"],["Игры",300,"Как называется игровая валюта Fortnite?","В-баксы"],["Игры",400,"Как зовут героя серии The Legend of Zelda?","Линк"]
 ];
-let client=null,channel=null,roomCode="",nick="",isHost=false,players={},state={scores:{},used:[],active:null,buzz:null,started:false},ready=false;
+let client=null,channel=null,roomCode="",nick="",isHost=false,players={},state={scores:{},used:[],active:null,buzz:null,started:false},ready=false;\nconst questionSets=[questions.map(q=>q.slice())];\nfunction shuffleQuestions(){for(let i=questions.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[questions[i],questions[j]]=[questions[j],questions[i]]}}
 const setStatus=t=>$("status").textContent=t;
 function code(){return Math.random().toString(36).slice(2,8).toUpperCase()}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 async function connect(make){
  const url="https://akdbjvfbxgianubcabvw.supabase.co",key="sb_publishable_FwzJYDkLuklBTa3AKIrz3Q_0tcnKEUF";nick=$("nick").value.trim();roomCode=make?code():$("room").value.trim().toUpperCase();
  if(!nick||!roomCode){setStatus(make?"Введи ник, чтобы создать комнату.":"Введи ник и код комнаты.");return}
- try{client=window.supabase.createClient(url,key);isHost=make;players={};state={scores:{},used:[],active:null,buzz:null,started:false};state.scores[nick]=0;
+ try{client=window.supabase.createClient(url,key);isHost=make;players={};state={scores:{},used:[],active:null,buzz:null,started:false};if(make)shuffleQuestions();state.scores[nick]=0;
  channel=client.channel("svoyak-"+roomCode,{config:{presence:{key:nick},broadcast:{ack:true,self:false}}});
  channel.on("presence",{event:"sync"},()=>{const p=channel.presenceState();players={};Object.values(p).flat().forEach(x=>players[x.nick]=x);if(isHost&&!state.started&&Object.keys(players).length>=2) $("start").disabled=false;renderScores();$("lobbyText").textContent=Object.keys(players).length>=2?"Соперник подключился!":"Ожидание соперника…";});
  channel.on("broadcast",{event:"state"},({payload})=>{if(!isHost){state=payload;renderAll()}});

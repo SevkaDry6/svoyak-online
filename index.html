@@ -114,6 +114,11 @@ async function broadcastState(){if(channel&&isHost)await channel.send({type:"bro
 function renderScores(){const names=Object.keys(players);const arr=names.length?names:[nick];const html=arr.map(n=>'<div class="score">'+esc(n)+'<strong>'+Number(state.scores[n]||0)+'</strong><small>баллов</small></div>').join("");$("scores").innerHTML=html;if($("gameScores"))$("gameScores").innerHTML=html;$("start").disabled=!(isHost&&names.length>=2&&!state.started)}
 function renderBoard(){const cats=["География","Кино","Музыка","Наука","Игры"];$("board").innerHTML=cats.map(c=>'<div><div class="cat">'+c+'</div>'+[100,200,300,400].map(v=>{let i=questions.findIndex(q=>q[0]===c&&q[1]===v);return '<button class="tile '+(state.used.includes(i)?"used":"")+'" '+(state.used.includes(i)||!state.started||state.active!==null?"disabled":"")+' data-i="'+i+'">'+v+'</button>'}).join("")+'</div>').join("");$("board").querySelectorAll("button").forEach(b=>b.onclick=async()=>{const index=+b.dataset.i;if(state.used.includes(index)||!state.started||state.active!==null)return;if(isHost){state.active=index;state.buzz=null;state.answerOptions=choicesFor(questions[index]);await broadcastState();renderAll()}else{await channel.send({type:"broadcast",event:"selectQuestion",payload:{index,nick}})}})}
 function choicesFor(q){
+ if(Array.isArray(q)&&q.length>=7){
+  const options=[String(q[3]),...q.slice(4,7).map(String)];
+  for(let i=options.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[options[i],options[j]]=[options[j],options[i]]}
+  return options;
+ }
  const distractors={
   "География":["Лондон","Токио","Рим","Берлин","Мадрид","Оттава","Канберра","Нил","Амазонка","Волга","Дунай","Байкал","Эверест","Килиманджаро","Африка","Европа","Южная Америка","Атлантический океан","Индийский океан","Япония","Канада","Бразилия","Италия","Австралия"],
   "Кино":["Шрек","Симба","Олаф","Буратино","Кевин","Соник","Базз Лайтер","ВАЛЛ-И","Дарт Вейдер","Индиана Джонс","Капитан Америка","Человек-паук","Хогвартс","Эренделл","Готэм","Нарния","Мордор","Том","Джерри","Пиноккио"],

@@ -7,7 +7,7 @@
 <header class="brand"><div class="logo">⚡</div><div><h1>СВОЯК ONLINE</h1><p>Думай быстрее. Играй честно. Забирай победу.</p></div></header>
 <section class="panel" id="setup"><h2>Войти в игру</h2><label>Твой ник</label><input id="nick" maxlength="18" placeholder="Введи ник"><label>Код комнаты</label><input id="room" maxlength="8" placeholder="Код от друга"><div class="row" style="margin-top:14px"><button class="primary" id="join">Войти по коду</button><button id="create">Создать комнату</button></div><div id="status" class="status">Введи ник и код комнаты или создай новую.</div></section>
 <section class="hidden" id="lobby"><div class="row"><div><h2>Комната <span id="code"></span></h2><p class="muted" id="lobbyText">Ожидание соперника…</p></div><div><label>Отправь другу этот код</label><input id="share" readonly><button id="copy" style="width:100%;margin-top:8px">Скопировать код</button></div></div><div class="scores" id="scores"></div><button id="start" class="primary" style="width:100%;margin-top:14px" disabled>Начать матч</button></section>
-<div id="roombar" class="roombar hidden"><span>Комната:</span><strong id="miniCode"></strong><button id="copyMini">Копировать код</button><span id="playersMini" class="muted">Подключаем соперника…</span></div><section class="panel hidden" id="game"><h2>Выбери вопрос</h2><p class="muted">Нажмите на стоимость вопроса. Кто первым нажмёт «Я отвечаю», тот получает право ответа.</p><div class="scores game-scores" id="gameScores" aria-label="Счёт игроков"></div><div class="board" id="board"></div><div id="questionBox" class="hidden"><hr style="border-color:var(--line)"><p id="meta" class="muted"></p><div class="q" id="question"></div><button class="primary" id="buzz">Я отвечаю</button><div class="status" id="buzzStatus">Кнопка свободна</div><p id="answerHelp" class="muted"></p><div id="answerChoices" class="row"></div></div><div id="result" class="status hidden"></div></section>
+<div id="roombar" class="roombar hidden"><span>Комната:</span><strong id="miniCode"></strong><button id="copyMini">Копировать код</button><span id="playersMini" class="muted">Подключаем соперника…</span></div><section class="panel hidden" id="game"><h2>Выбери вопрос</h2><p class="muted">Лёгкие вопросы из случайной подборки. В каждой новой комнате — новый набор. Кто первым нажмёт «Я отвечаю», тот получает право ответа.</p><div class="scores game-scores" id="gameScores" aria-label="Счёт игроков"></div><div class="board" id="board"></div><div id="questionBox" class="hidden"><hr style="border-color:var(--line)"><p id="meta" class="muted"></p><div class="q" id="question"></div><button class="primary" id="buzz">Я отвечаю</button><div class="status" id="buzzStatus">Кнопка свободна</div><p id="answerHelp" class="muted"></p><div id="answerChoices" class="row"></div></div><div id="result" class="status hidden"></div></section>
 
 </main>
 <script>
@@ -65,13 +65,41 @@ function shuffleQuestions(){
  for(const cat of cats)for(const value of values){const options=questionPool.filter(q=>q[0]===cat&&q[1]===value);picked.push(options[Math.floor(Math.random()*options.length)].slice());}
  questions.splice(0,questions.length,...picked);
 }
+async function translateToRussian(text){
+ const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ru&dt=t&q='+encodeURIComponent(text);
+ const res=await fetch(url);if(!res.ok)throw Error('Перевод недоступен');
+ const data=await res.json();return data[0].map(part=>part[0]).join('');
+}
+async function loadFreshEasyQuestions(){
+ try{
+  const res=await fetch('https://the-trivia-api.com/v2/questions?limit=20&difficulties=easy&types=text_choice');
+  if(!res.ok)throw Error('Викторина временно недоступна');
+  const data=await res.json();if(!Array.isArray(data)||data.length<20)throw Error('Мало новых вопросов');
+  const cats=['География','Кино','Музыка','Наука','Игры'],values=[100,200,300,400];
+  const fresh=await Promise.all(data.slice(0,20).map(async item=>{
+   const parts=[item.question?.text,item.correctAnswer,...(item.incorrectAnswers||[])];
+   if(parts.length!==5||parts.some(x=>!x))throw Error('Некорректный вопрос');
+   const translated=await translateToRussian(parts.join(' ||| '));
+   const pieces=translated.split('|||').map(x=>x.trim());
+   if(pieces.length!==5)throw Error('Не удалось перевести вопрос');
+   return pieces;
+  }));
+  const prepared=fresh.map((p,i)=>[cats[Math.floor(i/4)],values[i%4],p[0],p[1],...p.slice(2)]);
+  questions.splice(0,questions.length,...prepared);
+  return true;
+ }catch(e){
+  shuffleQuestions();
+  console.warn('Использован запасной набор вопросов:',e);
+  return false;
+ }
+}
 const setStatus=t=>$("status").textContent=t;
 function code(){return Math.random().toString(36).slice(2,8).toUpperCase()}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 async function connect(make){
  const url="https://akdbjvfbxgianubcabvw.supabase.co",key="sb_publishable_FwzJYDkLuklBTa3AKIrz3Q_0tcnKEUF";nick=$("nick").value.trim();roomCode=make?code():$("room").value.trim().toUpperCase();
  if(!nick||!roomCode){setStatus(make?"Введи ник, чтобы создать комнату.":"Введи ник и код комнаты.");return}
- try{client=window.supabase.createClient(url,key);isHost=make;players={};state={scores:{},used:[],active:null,buzz:null,started:false};if(make)shuffleQuestions();else questions.splice(0,questions.length,...questionPool.slice(0,20).map(q=>q.slice()));state.scores[nick]=0;
+ try{client=window.supabase.createClient(url,key);isHost=make;players={};state={scores:{},used:[],active:null,buzz:null,started:false};if(make){setStatus("Загружаю новые лёгкие вопросы…");await loadFreshEasyQuestions()}else questions.splice(0,questions.length,...questionPool.slice(0,20).map(q=>q.slice()));state.scores[nick]=0;
  channel=client.channel("svoyak-"+roomCode,{config:{presence:{key:nick},broadcast:{ack:true,self:false}}});
  channel.on("presence",{event:"sync"},()=>{const p=channel.presenceState();players={};Object.values(p).flat().forEach(x=>players[x.nick]=x);$("playersMini").textContent=Object.keys(players).length>=2?"Соперник подключён":"Ожидание соперника…";if(isHost&&!state.started&&Object.keys(players).length>=2){$("lobbyText").textContent="Соперник подключён! Нажми «Начать матч», когда оба готовы.";}if(isHost){Object.keys(players).forEach(n=>{if(state.scores[n]===undefined)state.scores[n]=0});broadcastState()}renderScores();$("lobbyText").textContent=Object.keys(players).length>=2?"Соперник подключился!":"Ожидание соперника…";});
  channel.on("broadcast",{event:"state"},({payload})=>{if(!isHost){if(Array.isArray(payload.questions)&&payload.questions.length===questions.length)questions.splice(0,questions.length,...payload.questions);state={...payload};delete state.questions;renderAll()}});

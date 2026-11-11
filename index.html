@@ -34,14 +34,15 @@ label{display:block;color:#b7b2bd;font-size:12px;margin:14px 0 7px;letter-spacin
 const $=id=>document.getElementById(id);
 const SUPABASE_URL="https://akdbjvfbxgianubcabvw.supabase.co";
 const SUPABASE_KEY="sb_publishable_FwzJYDkLuklBTa3AKIrz3Q_0tcnKEUF";
-let client=null,channel=null,roomCode="",nick="",isHost=false,players={};
+let client=null,channel=null,roomCode="",nick="",isHost=false,players={},playerId="";
 function makeCode(){return Math.random().toString(36).slice(2,8).toUpperCase()}
 function setStatus(s){$("status").textContent=s}
 function renderPlayers(){
- const names=Object.keys(players);
- $("hostName").textContent=players.__host||nick;
- const guest=names.find(n=>n!==players.__host);
- $("guestName").textContent=guest||"Ожидаем игрока…";
+ const list=Object.values(players);
+ const host=list.find(p=>p.role==="host");
+ const guest=list.find(p=>p.role==="guest");
+ $("hostName").textContent=host?.nick|| (isHost?nick:"Создатель комнаты");
+ $("guestName").textContent=guest?.nick||"Ожидаем игрока…";
  $("slot2").classList.toggle("filled",!!guest);
  $("lobbyStatus").textContent=guest?"Второй игрок подключился. Можно проверить комнату.":"Ссылка готова — ждём второго игрока.";
  $("start").disabled=!(isHost&&!!guest);
@@ -55,12 +56,11 @@ async function enter(create){
  $("create").disabled=$("join").disabled=true;setStatus("Подключаем комнату…");
  try{
   client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-  isHost=create;players={};players[nick]={nick};
-  channel=client.channel("mafia-"+roomCode,{config:{presence:{key:nick},broadcast:{ack:true,self:false}}});
+  isHost=create;players={};playerId=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());
+  channel=client.channel("mafia-"+roomCode,{config:{presence:{key:playerId},broadcast:{ack:true,self:false}}});
   channel.on("presence",{event:"sync"},()=>{
    const state=channel.presenceState();players={};
-   Object.values(state).flat().forEach(p=>{if(p&&p.nick)players[p.nick]={nick:p.nick}});
-   if(isHost)players.__host=nick;
+   Object.values(state).flat().forEach(p=>{if(p&&p.nick&&p.role)players[p.playerId||p.nick]={nick:p.nick,role:p.role}});
    renderPlayers();
   });
   channel.on("broadcast",{event:"room-test"},({payload})=>{
@@ -68,13 +68,13 @@ async function enter(create){
   });
   channel.subscribe(async status=>{
    if(status==="SUBSCRIBED"){
-    await channel.track({nick,joined_at:Date.now()});
+    await channel.track({nick,role:isHost?"host":"guest",playerId,joined_at:Date.now()});
     $("setup").classList.add("hidden");$("lobby").classList.remove("hidden");
     $("code").textContent=roomCode;$("share").value=roomCode;
     $("hostName").textContent=isHost?nick:"Создатель комнаты";
     renderPlayers();
-   }else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT"){
-    setStatus("Не удалось подключиться. Проверь интернет и попробуй ещё раз.");
+   }else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT"||status==="CLOSED"){
+    setStatus("Ошибка соединения ("+status+"). Проверь интернет и настройки Realtime в Supabase, затем попробуй ещё раз.");
     $("create").disabled=$("join").disabled=false;
    }
   });
@@ -87,7 +87,7 @@ $("copy").onclick=async()=>{
  catch{$("lobbyStatus").textContent="Код комнаты: "+roomCode+" — скопируй его вручную."}
 };
 $("start").onclick=async()=>{
- if(!isHost||Object.keys(players).filter(n=>n!=="__host").length<2)return;
+ if(!isHost||!Object.values(players).some(p=>p.role==="guest"))return;
  await channel.send({type:"broadcast",event:"room-test",payload:{message:"Связь между игроками работает. Комната синхронизирована."}});
  $("lobby").classList.add("hidden");$("test").classList.remove("hidden");
 };

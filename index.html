@@ -1,144 +1,95 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Свояк Online</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#09090d"><title>МАФИЯ — онлайн</title>
 <style>
-:root{--bg:#080d0a;--panel:#111a14;--line:#294333;--green:#4cff9b;--text:#effff4;--muted:#a1b6a8}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#153021,#080d0a 65%);color:var(--text);font:16px system-ui,sans-serif}main{max-width:1000px;margin:auto;padding:20px 14px 45px}.brand{display:flex;gap:12px;align-items:center;margin-bottom:20px}.logo{display:grid;place-items:center;width:48px;height:48px;border:1px solid #326b4a;border-radius:15px;color:var(--green);font-size:25px}.brand h1{margin:0;font-size:clamp(25px,5vw,38px)}.brand p{margin:3px 0;color:var(--muted)}.panel{background:#111a14ed;border:1px solid var(--line);border-radius:20px;padding:18px;margin:14px 0}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:180px}label{display:block;font-size:13px;color:var(--muted);margin:8px 0 6px}input{width:100%;background:#080f0a;color:white;border:1px solid #34513e;border-radius:11px;padding:13px;font:inherit}button{background:#193a27;color:white;border:1px solid #376a49;border-radius:12px;padding:12px 14px;font:inherit;font-weight:700;cursor:pointer}button.primary{background:var(--green);color:#082012;border-color:var(--green)}button:disabled{opacity:.4}.muted{color:var(--muted)}.status{padding:12px;background:#0a140d;border:1px solid #294333;border-radius:12px;margin-top:12px}.hidden{display:none!important}.scores{display:flex;gap:10px;flex-wrap:wrap}.game-scores{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.game-scores .score{min-width:0;padding:8px 12px;flex:1}.game-scores .score strong{font-size:23px}.score{flex:1;min-width:130px;border:1px solid var(--line);background:#0b130e;padding:12px;border-radius:13px}.score strong{display:block;font-size:27px;color:var(--green)}.board{display:grid;grid-template-columns:repeat(5,minmax(115px,1fr));gap:8px;overflow-x:auto}.cat{text-align:center;color:var(--green);font-weight:800;font-size:13px}.tile{width:100%;margin-top:6px;color:var(--green);background:#10271a}.tile.used{opacity:.25}#answerChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}#answerChoices button{min-height:58px;white-space:normal}#answerChoices button:disabled{opacity:.72;border-color:#34513e;background:#16251b;color:#effff4}.q{font-size:clamp(22px,4vw,32px);line-height:1.3;margin:16px 0}.small{font-size:12px;color:var(--muted);line-height:1.5}.roombar{display:none!important}.roombar input{width:110px;padding:8px}.roombar button{padding:8px 10px}@media(max-width:600px){main{padding:10px 8px 24px}.brand{margin-bottom:8px}.brand p{display:none}.board{grid-template-columns:repeat(5,minmax(90px,1fr));gap:5px}.tile{padding:10px 4px}.panel{padding:10px;margin:8px 0}#answerChoices{grid-template-columns:1fr}#answerChoices button{min-height:54px}.roombar{display:none!important}}
-</style></head><body><main>
-<header class="brand"><div class="logo">⚡</div><div><h1>СВОЯК ONLINE</h1><p>Думай быстрее. Играй честно. Забирай победу.</p></div></header>
-<section class="panel" id="setup"><h2>Войти в игру</h2><label>Твой ник</label><input id="nick" maxlength="18" placeholder="Введи ник"><label>Код комнаты</label><input id="room" maxlength="8" placeholder="Код от друга"><div class="row" style="margin-top:14px"><button class="primary" id="join">Войти по коду</button><button id="create">Создать комнату</button></div><div id="status" class="status">Введи ник и код комнаты или создай новую.</div></section>
-<section class="hidden" id="lobby"><div class="row"><div><h2>Комната <span id="code"></span></h2><p class="muted" id="lobbyText">Ожидание соперника…</p></div><div><label>Отправь другу этот код</label><input id="share" readonly><button id="copy" style="width:100%;margin-top:8px">Скопировать код</button></div></div><div class="scores" id="scores"></div><button id="start" class="primary" style="width:100%;margin-top:14px" disabled>Начать матч</button></section>
-<div id="roombar" class="roombar hidden"><span>Комната:</span><strong id="miniCode"></strong><button id="copyMini">Копировать код</button><span id="playersMini" class="muted">Подключаем соперника…</span></div><section class="panel hidden" id="game"><h2>Выбери вопрос</h2><p class="muted">Лёгкие вопросы из случайной подборки. В каждой новой комнате — новый набор. Кто первым нажмёт «Я отвечаю», тот получает право ответа.</p><div class="scores game-scores" id="gameScores" aria-label="Счёт игроков"></div><div class="board" id="board"></div><div id="questionBox" class="hidden"><hr style="border-color:var(--line)"><p id="meta" class="muted"></p><div class="q" id="question"></div><button class="primary" id="buzz">Я отвечаю</button><div class="status" id="buzzStatus">Кнопка свободна</div><p id="answerHelp" class="muted"></p><div id="answerChoices" class="row"></div></div><div id="result" class="status hidden"></div></section>
-
+:root{color-scheme:dark;--bg:#09090d;--panel:#121219;--line:#292832;--white:#f5f3f5;--muted:#9895a2;--red:#ed3348;--red2:#741b2b;--gold:#d9b779}
+*{box-sizing:border-box}html{min-height:100%;background:var(--bg)}body{margin:0;min-height:100vh;overflow-x:hidden;background:radial-gradient(ellipse at 50% -15%,#3a111c 0,transparent 45%),linear-gradient(160deg,#0c0b11,#08080c 65%);color:var(--white);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.12;background-image:linear-gradient(90deg,transparent 49.8%,#fff 50%,transparent 50.2%),linear-gradient(transparent 49.8%,#fff 50%,transparent 50.2%);background-size:72px 72px;mask-image:linear-gradient(to bottom,#000,transparent 72%)}
+main{position:relative;width:min(920px,100%);margin:auto;padding:22px 16px 48px}.intro{min-height:180px;display:grid;place-items:center;text-align:center;position:relative;overflow:hidden;margin:4px 0 20px}
+.intro:before{content:"";position:absolute;width:250px;height:250px;border:1px solid #6d2430;border-radius:50%;box-shadow:0 0 55px #a51e3526,inset 0 0 45px #a51e3520}
+.ghosts{position:absolute;inset:0;overflow:hidden;pointer-events:none}.ghosts span{position:absolute;white-space:nowrap;color:#e94a5b;opacity:0;letter-spacing:.22em;font-weight:800;animation:drift 8s linear infinite}.ghosts span:nth-child(1){top:12%;left:-35%;font-size:12px;animation-delay:0s}.ghosts span:nth-child(2){top:70%;left:110%;font-size:17px;animation-delay:2s}.ghosts span:nth-child(3){top:28%;left:115%;font-size:10px;animation-delay:4s}.ghosts span:nth-child(4){top:84%;left:-40%;font-size:13px;animation-delay:6s}
+@keyframes drift{0%{transform:translateX(0) rotate(-7deg);opacity:0}12%{opacity:.28}88%{opacity:.2}100%{transform:translateX(150vw) rotate(7deg);opacity:0}}
+.kicker{position:relative;color:var(--gold);font-size:10px;font-weight:800;letter-spacing:.42em;text-transform:uppercase;margin-bottom:8px}.title{position:relative;margin:0;font-size:clamp(48px,12vw,90px);line-height:.95;letter-spacing:.12em;font-weight:950;text-shadow:0 5px 35px #ed334833}.title em{font-style:normal;color:var(--red)}.subtitle{position:relative;margin:14px 0 0;color:#aaa5b0;font-size:12px;letter-spacing:.22em;text-transform:uppercase}
+.panel{position:relative;background:linear-gradient(145deg,#17161eF2,#101016F5);border:1px solid #302d38;border-radius:20px;padding:22px;box-shadow:0 18px 55px #0007;margin:14px 0}.panel:before{content:"";position:absolute;top:-1px;left:22px;width:60px;height:2px;background:var(--red);box-shadow:0 0 14px #ed334899}
+h2{font-size:19px;letter-spacing:.04em;margin:0 0 6px}.muted{color:var(--muted)}.hint{font-size:13px;margin:0 0 18px;color:var(--muted)}
+label{display:block;color:#b7b2bd;font-size:12px;margin:14px 0 7px;letter-spacing:.06em}input{width:100%;padding:14px 15px;background:#0a0a10;border:1px solid #383440;border-radius:12px;color:#fff;font:inherit;outline:none}input:focus{border-color:#a92b3c;box-shadow:0 0 0 3px #ed33481b}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}button{border:1px solid #48414b;border-radius:12px;padding:13px 16px;background:#201d26;color:#f5f3f5;font:700 14px system-ui;cursor:pointer;transition:transform .15s,border-color .15s,background .15s}button:active{transform:scale(.98)}button:disabled{opacity:.4;cursor:not-allowed}.primary{background:linear-gradient(135deg,#ed3348,#a51d32);border-color:#ed4657;box-shadow:0 8px 24px #a51d3233}.status{margin-top:14px;padding:12px 14px;background:#0b0a10;border:1px solid #302d38;border-radius:11px;color:#aaa5b0;font-size:13px}.hidden{display:none!important}
+.roomhead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}.code{font-size:25px;font-weight:900;letter-spacing:.2em;color:var(--gold)}.copyrow{display:flex;gap:8px;margin-top:7px}.copyrow input{min-width:0}.copyrow button{white-space:nowrap;padding-inline:12px}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}.slot{min-height:105px;border:1px dashed #49414d;background:#0d0c12;border-radius:14px;padding:14px;display:flex;flex-direction:column;justify-content:center}.slot.filled{border-style:solid;border-color:#6e2936;background:linear-gradient(145deg,#211219,#111016)}.slot small{color:var(--muted);font-size:11px;letter-spacing:.12em;text-transform:uppercase}.slot strong{font-size:17px;margin-top:6px}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#777;margin-right:7px}.filled .dot{background:#62d99b;box-shadow:0 0 9px #62d99b}
+.note{font-size:12px;line-height:1.6;color:#aaa5b0;margin:12px 0 0}.pill{display:inline-block;border:1px solid #63303a;color:#f07884;border-radius:99px;padding:5px 9px;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+@media(max-width:560px){main{padding:10px 12px 30px}.intro{min-height:160px;margin-bottom:8px}.panel{padding:17px;border-radius:16px}.actions{grid-template-columns:1fr}.slots{gap:8px}.slot{padding:11px;min-height:92px}.copyrow{flex-wrap:wrap}.copyrow input{flex:1 1 100%}.copyrow button{width:100%}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body><main>
+<header class="intro"><div class="ghosts" aria-hidden="true"><span>МАФИЯ</span><span>МАФИЯ</span><span>МАФИЯ</span><span>МАФИЯ</span></div><div><div class="kicker">город засыпает</div><h1 class="title">МАФ<span>И</span>Я</h1><p class="subtitle">онлайн · доверься не каждому</p></div></header>
+<section class="panel" id="setup"><h2>Войти в игру</h2><p class="hint">Создай комнату и пригласи второго игрока по коду.</p><label for="nick">ТВОЙ НИК</label><input id="nick" maxlength="18" autocomplete="nickname" placeholder="Как тебя называть?"><label for="room">КОД КОМНАТЫ</label><input id="room" maxlength="8" autocapitalize="characters" placeholder="Например, A7K2QX"><div class="actions"><button class="primary" id="create">Создать комнату</button><button id="join">Присоединиться</button></div><div class="status" id="status">Сначала введи ник. Затем создай комнату или введи код друга.</div></section>
+<section class="panel hidden" id="lobby"><div class="roomhead"><div><span class="pill">тест · 2 игрока</span><h2 style="margin-top:10px">Игровая комната</h2><div class="code" id="code"></div></div><div style="flex:1;min-width:220px"><label>ОТПРАВЬ ДРУГУ КОД</label><div class="copyrow"><input id="share" readonly><button id="copy">Копировать</button></div></div></div><div class="slots"><div class="slot filled" id="slot1"><small><i class="dot"></i>Игрок 1 · создатель</small><strong id="hostName">—</strong></div><div class="slot" id="slot2"><small><i class="dot"></i>Игрок 2</small><strong id="guestName">Ожидаем игрока…</strong></div></div><button class="primary" id="start" style="width:100%" disabled>Проверить комнату</button><p class="note">Сейчас проверяем подключение двух телефонов и синхронизацию комнаты. Полноценная раздача ролей мафии, дона, доктора и комиссара будет следующим этапом: для настоящей партии понадобится больше двух игроков.</p><div class="status" id="lobbyStatus">Ожидание второго игрока…</div></section>
+<section class="panel hidden" id="test"><span class="pill">соединение установлено</span><h2 style="margin-top:12px">Комната работает</h2><p class="hint" id="testText">Оба игрока находятся в одной комнате.</p><button id="back" style="width:100%">Вернуться в комнату</button></section>
 </main>
 <script>
 const $=id=>document.getElementById(id);
-const questionPool=[
-["География",100,"Как называется столица Франции?","Париж"],["География",200,"Какой океан самый большой?","Тихий океан"],["География",300,"Какая страна имеет форму сапога?","Италия"],["География",400,"Как называется столица Канады?","Оттава"],
-["Кино",100,"Как зовут волшебника с молнией на лбу?","Гарри Поттер"],["Кино",200,"Как зовут космического рейнджера из «Истории игрушек»?","Базз Лайтер"],["Кино",300,"Как зовут львёнка из «Короля Льва»?","Симба"],["Кино",400,"Как зовут снежного человека из «Холодного сердца»?","Олаф"],
-["Музыка",100,"Сколько струн у стандартной гитары?","Шесть"],["Музыка",200,"Кто руководит оркестром?","Дирижёр"],["Музыка",300,"Как называется знак, повышающий ноту на полтона?","Диез"],["Музыка",400,"Сколько клавиш у стандартного фортепиано?","88"],
-["Наука",100,"Какая планета известна как Красная планета?","Марс"],["Наука",200,"Сколько ног у паука?","Восемь"],["Наука",300,"Как называется процесс получения энергии растением с помощью света?","Фотосинтез"],["Наука",400,"Какой газ растения поглощают при фотосинтезе?","Углекислый газ"],
-["Игры",100,"Какой герой Nintendo носит красную кепку и усы?","Марио"],["Игры",200,"В какой игре строят из блоков и исследуют мир?","Minecraft"],["Игры",300,"Как называется игровая валюта Fortnite?","В-баксы"],["Игры",400,"Как зовут героя серии The Legend of Zelda?","Линк"]
-,["География",100,"На каком континенте находится Бразилия?","Южная Америка"],
-["География",100,"Какой город стоит на Неве?","Санкт-Петербург"],
-["География",200,"Какая река протекает через Египет?","Нил"],
-["География",200,"Как называется самая высокая гора мира?","Эверест"],
-["География",300,"Какую страну называют Страной восходящего солнца?","Япония"],
-["География",300,"Какой материк самый маленький?","Австралия"],
-["География",400,"Как называется столица Австралии?","Канберра"],
-["География",400,"Какое озеро самое глубокое в мире?","Байкал"],
-["Кино",100,"Как зовут деревянного мальчика с длинным носом?","Буратино"],
-["Кино",100,"Как зовут друга Шрека — осла?","Осёл"],
-["Кино",200,"Как называется школа юных волшебников Гарри Поттера?","Хогвартс"],
-["Кино",200,"Как зовут робота из мультфильма Pixar, убирающего Землю?","ВАЛЛ-И"],
-["Кино",300,"Как зовут главного героя фильма «Один дома»?","Кевин"],
-["Кино",300,"Какой супергерой носит щит с белой звездой?","Капитан Америка"],
-["Кино",400,"Как называется королевство из мультфильма «Холодное сердце»?","Эренделл"],
-["Кино",400,"Как зовут археолога из приключенческих фильмов с кнутом?","Индиана Джонс"],
-["Музыка",100,"Какой инструмент обычно имеет чёрные и белые клавиши?","Пианино"],
-["Музыка",100,"Как называется человек, который поёт песню?","Вокалист"],
-["Музыка",200,"Сколько струн обычно у скрипки?","Четыре"],
-["Музыка",200,"Как называется группа музыкантов, играющих вместе?","Ансамбль"],
-["Музыка",300,"Как называется низкий мужской певческий голос?","Бас"],
-["Музыка",300,"Какой инструмент обычно называют ударным?","Барабан"],
-["Музыка",400,"Как называется скорость исполнения музыкального произведения?","Темп"],
-["Музыка",400,"Как называется музыкальное произведение для одного исполнителя?","Соло"],
-["Наука",100,"Как называется спутник Земли?","Луна"],
-["Наука",100,"При какой температуре вода замерзает в градусах Цельсия?","Ноль"],
-["Наука",200,"Какой орган помогает человеку дышать?","Лёгкие"],
-["Наука",200,"Сколько планет в Солнечной системе?","Восемь"],
-["Наука",300,"Как называется центр атома?","Ядро"],
-["Наука",300,"Какой металл обозначается символом Fe?","Железо"],
-["Наука",400,"Как называется переход воды из жидкости в пар?","Испарение"],
-["Наука",400,"Какой орган перекачивает кровь по телу?","Сердце"],
-["Игры",100,"Как называется жёлтый герой игры Pac-Man?","Пакман"],
-["Игры",100,"В какой игре ловят покемонов?","Pokémon"],
-["Игры",200,"Как зовут синего быстрого ежа из игр Sega?","Соник"],
-["Игры",200,"Как называется режим строительства в Minecraft без угроз?","Творческий"],
-["Игры",300,"Как зовут главного героя игры God of War?","Кратос"],
-["Игры",300,"Какая игровая серия известна городом Лос-Сантос?","Grand Theft Auto"],
-["Игры",400,"Как называется королевская битва от разработчиков Apex Legends?","Apex Legends"],
-["Игры",400,"Как зовут главного героя серии игр Halo?","Мастер Чиф"]
-];
-let questions=[],client=null,channel=null,roomCode="",nick="",isHost=false,players={},state={scores:{},used:[],active:null,buzz:null,started:false},ready=false;
-function shuffleQuestions(){
- const cats=['География','Кино','Музыка','Наука','Игры'],values=[100,200,300,400],picked=[];
- for(const cat of cats)for(const value of values){const options=questionPool.filter(q=>q[0]===cat&&q[1]===value);picked.push(options[Math.floor(Math.random()*options.length)].slice());}
- questions.splice(0,questions.length,...picked);
+const SUPABASE_URL="https://akdbjvfbxgianubcabvw.supabase.co";
+const SUPABASE_KEY="sb_publishable_FwzJYDkLuklBTa3AKIrz3Q_0tcnKEUF";
+let client=null,channel=null,roomCode="",nick="",isHost=false,players={};
+function makeCode(){return Math.random().toString(36).slice(2,8).toUpperCase()}
+function setStatus(s){$("status").textContent=s}
+function renderPlayers(){
+ const names=Object.keys(players);
+ $("hostName").textContent=players.__host||nick;
+ const guest=names.find(n=>n!==players.__host);
+ $("guestName").textContent=guest||"Ожидаем игрока…";
+ $("slot2").classList.toggle("filled",!!guest);
+ $("lobbyStatus").textContent=guest?"Второй игрок подключился. Можно проверить комнату.":"Ссылка готова — ждём второго игрока.";
+ $("start").disabled=!(isHost&&!!guest);
 }
-async function translateToRussian(text){
- const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ru&dt=t&q='+encodeURIComponent(text);
- const res=await fetch(url);if(!res.ok)throw Error('Перевод недоступен');
- const data=await res.json();return data[0].map(part=>part[0]).join('');
-}
-async function loadFreshEasyQuestions(){
+async function enter(create){
+ nick=$("nick").value.trim();
+ roomCode=create?makeCode():$("room").value.trim().toUpperCase();
+ if(!nick){setStatus("Сначала введи свой ник.");$("nick").focus();return}
+ if(!roomCode){setStatus("Введи код комнаты друга.");return}
+ if(nick.length>18){setStatus("Ник должен быть не длиннее 18 символов.");return}
+ $("create").disabled=$("join").disabled=true;setStatus("Подключаем комнату…");
  try{
-  const res=await fetch('https://the-trivia-api.com/v2/questions?limit=20&difficulties=easy&types=text_choice');
-  if(!res.ok)throw Error('Викторина временно недоступна');
-  const data=await res.json();if(!Array.isArray(data)||data.length<20)throw Error('Мало новых вопросов');
-  const cats=['География','Кино','Музыка','Наука','Игры'],values=[100,200,300,400];
-  const fresh=await Promise.all(data.slice(0,20).map(async item=>{
-   const parts=[item.question?.text,item.correctAnswer,...(item.incorrectAnswers||[])];
-   if(parts.length!==5||parts.some(x=>!x))throw Error('Некорректный вопрос');
-   const translated=await translateToRussian(parts.join(' ||| '));
-   const pieces=translated.split('|||').map(x=>x.trim());
-   if(pieces.length!==5)throw Error('Не удалось перевести вопрос');
-   return pieces;
-  }));
-  const prepared=fresh.map((p,i)=>[cats[Math.floor(i/4)],values[i%4],p[0],p[1],...p.slice(2)]);
-  questions.splice(0,questions.length,...prepared);
-  return true;
- }catch(e){
-  shuffleQuestions();
-  console.warn('Использован запасной набор вопросов:',e);
-  return false;
- }
+  client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  isHost=create;players={};players[nick]={nick};
+  channel=client.channel("mafia-"+roomCode,{config:{presence:{key:nick},broadcast:{ack:true,self:false}}});
+  channel.on("presence",{event:"sync"},()=>{
+   const state=channel.presenceState();players={};
+   Object.values(state).flat().forEach(p=>{if(p&&p.nick)players[p.nick]={nick:p.nick}});
+   if(isHost)players.__host=nick;
+   renderPlayers();
+  });
+  channel.on("broadcast",{event:"room-test"},({payload})=>{
+   $("testText").textContent=(payload&&payload.message)||"Оба игрока находятся в одной комнате.";
+  });
+  channel.subscribe(async status=>{
+   if(status==="SUBSCRIBED"){
+    await channel.track({nick,joined_at:Date.now()});
+    $("setup").classList.add("hidden");$("lobby").classList.remove("hidden");
+    $("code").textContent=roomCode;$("share").value=roomCode;
+    $("hostName").textContent=isHost?nick:"Создатель комнаты";
+    renderPlayers();
+   }else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT"){
+    setStatus("Не удалось подключиться. Проверь интернет и попробуй ещё раз.");
+    $("create").disabled=$("join").disabled=false;
+   }
+  });
+ }catch(e){setStatus("Ошибка подключения: "+(e.message||"попробуй ещё раз"));$("create").disabled=$("join").disabled=false}
 }
-const setStatus=t=>$("status").textContent=t;
-function code(){return Math.random().toString(36).slice(2,8).toUpperCase()}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-async function connect(make){
- const url="https://akdbjvfbxgianubcabvw.supabase.co",key="sb_publishable_FwzJYDkLuklBTa3AKIrz3Q_0tcnKEUF";nick=$("nick").value.trim();roomCode=make?code():$("room").value.trim().toUpperCase();
- if(!nick||!roomCode){setStatus(make?"Введи ник, чтобы создать комнату.":"Введи ник и код комнаты.");return}
- try{client=window.supabase.createClient(url,key);isHost=make;players={};state={scores:{},used:[],active:null,buzz:null,started:false};if(make){setStatus("Загружаю новые лёгкие вопросы…");await loadFreshEasyQuestions()}else questions.splice(0,questions.length,...questionPool.slice(0,20).map(q=>q.slice()));state.scores[nick]=0;
- channel=client.channel("svoyak-"+roomCode,{config:{presence:{key:nick},broadcast:{ack:true,self:false}}});
- channel.on("presence",{event:"sync"},()=>{const p=channel.presenceState();players={};Object.values(p).flat().forEach(x=>players[x.nick]=x);$("playersMini").textContent=Object.keys(players).length>=2?"Соперник подключён":"Ожидание соперника…";if(isHost&&!state.started&&Object.keys(players).length>=2){$("lobbyText").textContent="Соперник подключён! Нажми «Начать матч», когда оба готовы.";}if(isHost){Object.keys(players).forEach(n=>{if(state.scores[n]===undefined)state.scores[n]=0});broadcastState()}renderScores();$("lobbyText").textContent=Object.keys(players).length>=2?"Соперник подключился!":"Ожидание соперника…";});
- channel.on("broadcast",{event:"state"},({payload})=>{if(!isHost){if(Array.isArray(payload.questions)&&payload.questions.length===questions.length)questions.splice(0,questions.length,...payload.questions);state={...payload};delete state.questions;renderAll()}});
- channel.on("broadcast",{event:"selectQuestion"},({payload})=>{if(isHost&&state.started&&state.active===null&&Number.isInteger(payload.index)&&payload.index>=0&&payload.index<questions.length&&!state.used.includes(payload.index)){state.active=payload.index;state.buzz=null;state.answerOptions=choicesFor(questions[payload.index]);broadcastState();renderAll()}});
- channel.on("broadcast",{event:"buzz"},({payload})=>{if(isHost&&state.active!==null&&state.buzz===null){state.buzz=payload.nick;broadcastState();renderAll()}});
- channel.on("broadcast",{event:"answer"},({payload})=>{if(isHost&&state.active!==null&&state.buzz===payload.nick){finishAnswer(payload.choice,payload.nick)}});
- const res=await channel.subscribe(async s=>{if(s==="SUBSCRIBED"){await channel.track({nick,joined:Date.now()});$("setup").classList.add("hidden");$("lobby").classList.remove("hidden");$("code").textContent=roomCode;$("share").value=roomCode;$("roombar").classList.add("hidden");$("game").classList.add("hidden");$("playersMini").textContent="Ожидание соперника…";setStatus("Подключено");if(make){players[nick]={nick};renderScores()}renderScores();renderAll()}});
- if(res&&res.error)throw res.error;
- }catch(e){setStatus("Не удалось подключиться: "+(e.message||e));}
-}
-async function broadcastState(){if(channel&&isHost)await channel.send({type:"broadcast",event:"state",payload:{...state,questions:questions.map(q=>q.slice())}})}
-function renderScores(){const names=Object.keys(players);const arr=names.length?names:[nick];const html=arr.map(n=>'<div class="score">'+esc(n)+'<strong>'+Number(state.scores[n]||0)+'</strong><small>баллов</small></div>').join("");$("scores").innerHTML=html;if($("gameScores"))$("gameScores").innerHTML=html;$("start").disabled=!(isHost&&names.length>=2&&!state.started)}
-function renderBoard(){const cats=["География","Кино","Музыка","Наука","Игры"];$("board").innerHTML=cats.map(c=>'<div><div class="cat">'+c+'</div>'+[100,200,300,400].map(v=>{let i=questions.findIndex(q=>q[0]===c&&q[1]===v);return '<button class="tile '+(state.used.includes(i)?"used":"")+'" '+(state.used.includes(i)||!state.started||state.active!==null?"disabled":"")+' data-i="'+i+'">'+v+'</button>'}).join("")+'</div>').join("");$("board").querySelectorAll("button").forEach(b=>b.onclick=async()=>{const index=+b.dataset.i;if(state.used.includes(index)||!state.started||state.active!==null)return;if(isHost){state.active=index;state.buzz=null;state.answerOptions=choicesFor(questions[index]);await broadcastState();renderAll()}else{await channel.send({type:"broadcast",event:"selectQuestion",payload:{index,nick}})}})}
-function choicesFor(q){
- if(Array.isArray(q)&&q.length>=7){
-  const options=[String(q[3]),...q.slice(4,7).map(String)];
-  for(let i=options.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[options[i],options[j]]=[options[j],options[i]]}
-  return options;
- }
- const distractors={
-  "География":["Лондон","Токио","Рим","Берлин","Мадрид","Оттава","Канберра","Нил","Амазонка","Волга","Дунай","Байкал","Эверест","Килиманджаро","Африка","Европа","Южная Америка","Атлантический океан","Индийский океан","Япония","Канада","Бразилия","Италия","Австралия"],
-  "Кино":["Шрек","Симба","Олаф","Буратино","Кевин","Соник","Базз Лайтер","ВАЛЛ-И","Дарт Вейдер","Индиана Джонс","Капитан Америка","Человек-паук","Хогвартс","Эренделл","Готэм","Нарния","Мордор","Том","Джерри","Пиноккио"],
-  "Музыка":["Гитара","Скрипка","Барабан","Пианино","Бас","Тенор","Дирижёр","Композитор","Ансамбль","Соло","Темп","Ритм","Диез","Бемоль","Семь","Четыре","Шесть","Восемь","Моцарт","Бетховен"],
-  "Наука":["Марс","Венера","Юпитер","Луна","Солнце","Кислород","Азот","Углекислый газ","Железо","Медь","Ядро","Электрон","Гравитация","Испарение","Конденсация","Фотосинтез","Сердце","Лёгкие","Пять","Десять"],
-  "Игры":["Марио","Соник","Кратос","Линк","Пакман","Кирби","Мастер Чиф","Лара Крофт","Minecraft","Fortnite","Roblox","Tetris","PlayStation","Xbox","Nintendo","В-баксы","Алмазы","Творческий","Выживание","Grand Theft Auto"]
- };
- const correct=String(q[3]);
- const pool=[...new Set((distractors[q[0]]||[]).filter(a=>a!==correct))];
- for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
- const options=[correct,...pool.slice(0,3)];
- for(let i=options.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[options[i],options[j]]=[options[j],options[i]]}
- return options
-}
-function renderAll(){renderScores();if(state.started){$("lobby").classList.add("hidden");$("roombar").classList.add("hidden");$("game").classList.remove("hidden");renderBoard()}else{$("lobby").classList.remove("hidden");$("game").classList.add("hidden");}if(state.active!==null){$("questionBox").classList.remove("hidden");let q=questions[state.active];$("meta").textContent=q[0]+" · "+q[1]+" баллов";$("question").textContent=q[2];$("buzzStatus").textContent=state.buzz?state.buzz+" отвечает":"Кто первым нажмёт кнопку, тот отвечает";$("buzz").disabled=!!state.buzz;$("answerHelp").textContent=state.buzz?(state.buzz===nick?"Твой ход! Выбирай вариант ответа ниже.":"Соперник "+state.buzz+" отвечает. Ждём его выбор…"):"Нажми «Я отвечаю», чтобы получить право ответа. Варианты будут показаны ниже.";const canAnswer=state.buzz===nick;$("answerChoices").innerHTML=(Array.isArray(state.answerOptions)&&state.answerOptions.length===4?state.answerOptions:choicesFor(q)).map(a=>'<button '+(!canAnswer?'disabled':'')+' data-answer="'+esc(a)+'">'+esc(a)+'</button>').join("");$("answerChoices").querySelectorAll("button").forEach(b=>b.onclick=()=>submitAnswer(b.dataset.answer))}else{$("questionBox").classList.add("hidden");$("answerChoices").innerHTML=""}if(state.used.length===questions.length){$("result").classList.remove("hidden");$("result").textContent="Матч завершён! "+Object.entries(state.scores).map(([n,s])=>n+": "+s+" баллов").join(" · ")}}
-async function submitAnswer(choice){if(state.active===null||state.buzz!==nick)return;if(isHost){finishAnswer(choice,nick)}else await channel.send({type:"broadcast",event:"answer",payload:{nick,choice}})}
-async function finishAnswer(choice,who){if(!isHost||state.active===null||state.buzz!==who)return;const q=questions[state.active],correct=choice===q[3];state.scores[who]=(state.scores[who]||0)+(correct?q[1]:-q[1]);state.used.push(state.active);state.lastResult=who+": "+(correct?"верно! +":"неверно. ")+(correct?q[1]:-q[1])+" баллов. Правильный ответ: "+q[3];state.active=null;state.buzz=null;state.answerOptions=null;await broadcastState();renderAll();$("result").classList.remove("hidden");$("result").textContent=state.lastResult}
-$("create").onclick=()=>connect(true);$("join").onclick=()=>connect(false);
-async function copyRoomCode(){try{await navigator.clipboard.writeText(roomCode);$("playersMini").textContent="Код скопирован — отправь другу"}catch{$("playersMini").textContent="Код комнаты: "+roomCode+" (скопируй вручную)"}}$("copy").onclick=copyRoomCode;$("copyMini").onclick=copyRoomCode;
-$("start").onclick=async()=>{if(!isHost||Object.keys(players).length<2)return;state.started=true;await broadcastState();$("game").classList.remove("hidden");renderAll()};
-$("buzz").onclick=async()=>{if(!channel||state.active===null||state.buzz)return;if(isHost){state.buzz=nick;await broadcastState();renderAll()}else await channel.send({type:"broadcast",event:"buzz",payload:{nick}})};
-
+$("create").onclick=()=>enter(true);
+$("join").onclick=()=>enter(false);
+$("copy").onclick=async()=>{
+ try{await navigator.clipboard.writeText(roomCode);$("lobbyStatus").textContent="Код скопирован — отправь его другу."}
+ catch{$("lobbyStatus").textContent="Код комнаты: "+roomCode+" — скопируй его вручную."}
+};
+$("start").onclick=async()=>{
+ if(!isHost||Object.keys(players).filter(n=>n!=="__host").length<2)return;
+ await channel.send({type:"broadcast",event:"room-test",payload:{message:"Связь между игроками работает. Комната синхронизирована."}});
+ $("lobby").classList.add("hidden");$("test").classList.remove("hidden");
+};
+$("back").onclick=()=>{$("test").classList.add("hidden");$("lobby").classList.remove("hidden")};
 </script></body></html>

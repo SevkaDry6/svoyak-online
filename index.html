@@ -19,15 +19,17 @@ button{margin-top:22px;border:1px solid #ff9bc2;border-radius:999px;padding:13px
 .floaters{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:-1}.floaters span{position:absolute;bottom:-50px;color:#ff8db9;opacity:0;animation:rise linear infinite}
 .floaters span:nth-child(1){left:8%;animation-duration:13s;font-size:18px}.floaters span:nth-child(2){left:24%;animation-duration:17s;animation-delay:4s;font-size:12px}.floaters span:nth-child(3){left:49%;animation-duration:15s;animation-delay:2s;font-size:22px}.floaters span:nth-child(4){left:72%;animation-duration:19s;animation-delay:7s;font-size:16px}.floaters span:nth-child(5){left:91%;animation-duration:14s;animation-delay:5s;font-size:20px}
 footer{text-align:center;color:#a98295;font-size:11px;margin-top:28px}
+.visitor-count{width:max-content;max-width:100%;margin:8px auto 0;padding:8px 15px;border:1px solid #87425f;border-radius:999px;background:#291321cc;color:#ffd6e5;font-size:12px;letter-spacing:.04em;box-shadow:0 6px 24px #0004}.visitor-count strong{color:#fff;font-variant-numeric:tabular-nums}
 @keyframes beat{0%,100%{transform:scale(1)}12%{transform:scale(1.13)}24%{transform:scale(1)}}@keyframes down{50%{transform:translateY(7px);opacity:.6}}@keyframes rise{0%{transform:translateY(0) rotate(0);opacity:0}12%{opacity:.5}90%{opacity:.2}100%{transform:translateY(-110vh) rotate(35deg);opacity:0}}@keyframes appear{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:480px){main{padding:10px 12px 35px}.hero{min-height:94svh}.card{border-radius:24px;padding:34px 18px}.note{border-radius:23px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 </style></head>
 <body>
 <div class="floaters" aria-hidden="true"><span>♥</span><span>♡</span><span>♥</span><span>♡</span><span>♥</span></div>
 <main>
+<div class="visitor-count" aria-live="polite">Посетили сайт: <strong id="visit-count">загрузка…</strong> раз</div>
 <section class="hero"><div class="card"><div class="heart">♥</div><div class="kicker">маленькое послание для одного человека</div><h1>Так, стоп.<br>Ты Настя?</h1><p class="intro">Если ты не Настя — иди нахуй 😂<br>А если Настя, то проходи. Здесь всё только для тебя.</p><div class="warning">Посторонним вход запрещён ❤️</div><div class="scroll">Листай ниже — там главное <b>↓</b></div></div></section>
 <section class="note"><div class="kicker">ты дошла до самого важного</div><div class="heart">♥</div><h2>Я тебя люблю,<br>Настя ❤️</h2><p>Не ради красивых слов и не ради шутки. Просто хочу, чтобы ты знала: ты очень дорога мне, и я счастлив, что ты есть в моей жизни.</p><div class="signature">С теплом — для тебя</div><button id="surprise" type="button">Нажми, если улыбнулась 💗</button><div class="hidden-message" id="message">Тогда лови ещё одно сердечко. Оно тоже только твоё. ♥</div></section>
 <footer>Сделано с любовью. Только для Насти ♥</footer>
 </main>
-<script>document.getElementById('surprise').addEventListener('click',()=>{document.getElementById('message').style.display='block';document.getElementById('surprise').textContent='Это сердечко тебе ❤️'});</script>
+<script>document.getElementById('surprise').addEventListener('click',()=>{document.getElementById('message').style.display='block';document.getElementById('surprise').textContent='Это сердечко тебе ❤️'});\nfetch('https://api.counterapi.dev/v1/svoyak-nastya-love-2026/visits/up').then(r=>{if(!r.ok)throw new Error('counter unavailable');return r.json()}).then(data=>{document.getElementById('visit-count').textContent=Number(data.count).toLocaleString('ru-RU')}).catch(()=>{document.getElementById('visit-count').textContent='—'});</script>
 </body></html>

@@ -5,8 +5,8 @@
 <meta name="theme-color" content="#07130d"><title>СВОЯК ONLINE — викторина</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{color-scheme:dark;--bg:#07110c;--panel:#101d15;--panel2:#14251a;--line:#294a34;--green:#45e17d;--mint:#a5ffc0;--muted:#9db3a3;--white:#f2fff5;--gold:#f2d27b}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -12%,#174d2a 0,transparent 48%),linear-gradient(160deg,#07130c,#08100c 70%);color:var(--white);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+:root{color-scheme:dark;--bg:#160a12;--panel:#24101d;--panel2:#321526;--line:#63334d;--green:#ff6fa9;--mint:#ffc0d8;--muted:#c9a7b7;--white:#fff3f8;--gold:#ffd1e2}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -12%,#702344 0,transparent 52%),radial-gradient(ellipse at 90% 55%,#3b1830 0,transparent 45%),linear-gradient(160deg,#160a12,#100810 75%);color:var(--white);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
 main{width:min(1050px,100%);margin:auto;padding:14px 14px 40px}.hero{text-align:center;padding:28px 8px 22px}.eyebrow{color:var(--mint);font-size:10px;font-weight:900;letter-spacing:.38em;text-transform:uppercase}.logo{font-size:clamp(43px,10vw,76px);line-height:1;margin:10px 0;font-weight:1000;letter-spacing:.12em;text-shadow:0 0 34px #45e17d55}.logo span{color:var(--green)}.tag{color:#a7c2ad;font-size:11px;letter-spacing:.2em;text-transform:uppercase}
 .panel{background:linear-gradient(145deg,#14241af5,#0e1912f7);border:1px solid var(--line);border-radius:21px;padding:20px;margin:13px 0;box-shadow:0 18px 55px #0007;position:relative}.panel:before{content:"";position:absolute;top:-1px;left:22px;width:64px;height:2px;background:var(--green);box-shadow:0 0 14px #45e17daa}h2{font-size:19px;margin:0 0 6px}.muted,.hint{color:var(--muted)}.hint{font-size:13px;margin:0 0 16px}
 label{display:block;color:#b8d0be;font-size:11px;font-weight:800;letter-spacing:.1em;margin:13px 0 6px}input{width:100%;padding:13px 14px;background:#08120b;border:1px solid #34543c;border-radius:12px;color:white;font:inherit;outline:none}input:focus{border-color:var(--green);box-shadow:0 0 0 3px #45e17d19}
@@ -16,10 +16,64 @@ label{display:block;color:#b8d0be;font-size:11px;font-weight:800;letter-spacing:
 .question{font-size:clamp(19px,4vw,27px);font-weight:800;line-height:1.3;margin:12px 0 17px}.options{display:grid;grid-template-columns:1fr 1fr;gap:9px}.option{padding:14px;text-align:left;min-height:58px;background:#122419;border-color:#355a3d;font-size:14px}.option.correct{background:#174d2b;border-color:#58e985;color:#caffd6}.option.wrong{background:#48201d;border-color:#b75b4f}.buzz{font-size:17px;padding:16px 22px;min-width:190px}.foot{font-size:11px;color:#819a87;line-height:1.6;margin-top:14px}
 @media(max-width:700px){.board{grid-template-columns:repeat(2,minmax(0,1fr))}.category{min-height:48px}.tile{min-height:48px}.options{grid-template-columns:1fr}.panel{padding:16px;border-radius:17px}}
 @media(max-width:420px){main{padding:7px 10px 28px}.hero{padding:24px 5px 18px}.grid2{grid-template-columns:1fr}.copy{width:100%}.copy input{flex:1;max-width:none}.buttons button{flex:1}}
+
+/* Романтическое оформление для Насти */
+.hero{padding:34px 12px 27px;position:relative}
+.eyebrow{color:#ffc0d8;letter-spacing:.24em}
+.logo{text-shadow:0 0 34px #ff6fa955}
+.logo span{color:#ff8db9}
+.tag{color:#e4b9cb}
+.love-intro{max-width:760px;margin:0 auto 18px;padding:27px 20px;border:1px solid #85415f;border-radius:26px;background:linear-gradient(145deg,#351629ee,#1d101cf5);box-shadow:0 18px 65px #0008,0 0 35px #ff6fa91a}
+.love-intro .big-heart{font-size:38px;filter:drop-shadow(0 0 13px #ff6fa9)}
+.love-intro h2{font-size:clamp(25px,6vw,42px);line-height:1.12;margin:9px 0 12px;color:#fff0f6}
+.love-intro p{margin:7px 0;color:#e9c4d4}
+.nastya-warning{display:inline-block;margin-top:10px;padding:10px 16px;border:1px solid #a84c73;border-radius:999px;background:#4a1d34;color:#ffd5e5;font-weight:900}
+.scroll-cue{margin-top:19px;color:#ffc0d8;font-size:12px;letter-spacing:.14em;text-transform:uppercase;animation:softPulse 1.8s infinite}
+.scroll-cue span{display:block;font-size:23px;margin-top:3px}
+@keyframes softPulse{50%{opacity:.55;transform:translateY(4px)}}
+.panel{background:linear-gradient(145deg,#2a1723f5,#1b1019f7);border-color:#63334d}
+.panel:before{background:#ff6fa9;box-shadow:0 0 14px #ff6fa9aa}
+input{background:#160d14;border-color:#63334d}
+input:focus{border-color:#ff8db9;box-shadow:0 0 0 3px #ff6fa919}
+button{border-color:#74435a;background:#3a2030}
+button:hover:not(:disabled){border-color:#ff8db9}
+.primary{background:linear-gradient(135deg,#ff8db9,#c83e79);border-color:#ff9bc2;color:#250b18}
+.quiet{background:#2a1723}
+.status{border-color:#63334d;background:#1b1019;color:#f0d2df}
+.player{border-color:#63334d;background:#1b1019}
+.dot{background:#ff8db9;box-shadow:0 0 9px #ff8db9}
+.badge{color:#ffc0d8;border-color:#85415f}
+.code{color:#ffc0d8}
+.category{background:#48243a;border-color:#85415f;color:#ffe1ec}
+.tile{background:linear-gradient(145deg,#632c49,#3e1b31);border-color:#a84c73;color:#ffd1e2}
+.tile:hover:not(:disabled){background:#783456;box-shadow:0 0 18px #ff6fa922}
+.option{background:#2b1924;border-color:#70445a}
+.option.correct{background:#4b2037;border-color:#ff8db9;color:#ffe1ec}
+.option.wrong{background:#48201d;border-color:#b75b4f}
+.foot{color:#b995a6}
+.love-ending{position:relative;overflow:hidden;text-align:center;margin:24px 0 12px;padding:clamp(28px,7vw,58px) 20px;border:1px solid #9a496d;border-radius:28px;background:radial-gradient(ellipse at 50% 0,#7a2c50aa,transparent 65%),linear-gradient(145deg,#351629,#1a0d17);box-shadow:0 20px 70px #0009,0 0 45px #ff6fa91c}
+.love-ending .kicker{color:#ffc0d8;font-size:11px;font-weight:900;letter-spacing:.3em;text-transform:uppercase}
+.love-ending h2{font-size:clamp(34px,8vw,64px);line-height:1.08;margin:14px 0;color:#fff1f7;text-shadow:0 0 28px #ff6fa955}
+.love-ending p{max-width:520px;margin:0 auto;color:#f0cddd;font-size:16px}
+.love-ending .heart-line{font-size:27px;letter-spacing:.25em;margin-top:20px;color:#ff8db9}
+@media(max-width:700px){.love-intro{padding:23px 16px}.love-ending{border-radius:22px}}
+
 </style>
 </head>
 <body><main>
-<header class="hero"><div class="eyebrow">игра для друзей · проверь знания</div><h1 class="logo">СВО<span>ЯК</span></h1><div class="tag">онлайн-викторина · два игрока и больше</div></header>
+<header class="hero">
+<section class="love-intro">
+<div class="big-heart">♥</div>
+<div class="eyebrow">ОСОБОЕ СООБЩЕНИЕ</div>
+<h2>Так, стоп! Ты Настя?</h2>
+<p>Если ты не Настя — иди нахуй 😂</p>
+<div class="nastya-warning">Вход только для Насти ❤️</div>
+<div class="scroll-cue">Листай вниз, там самое главное <span>↓</span></div>
+</section>
+<div class="eyebrow">ИГРА ДЛЯ ДРУЗЕЙ · ПРОВЕРЬ ЗНАНИЯ</div>
+<h1 class="logo">СВО<span>ЯК</span></h1>
+<div class="tag">онлайн-викторина · два игрока и больше</div>
+</header>
 <section class="panel" id="entry"><h2>Войти в игру</h2><p class="hint">Создай комнату или подключись к друзьям по коду. Все участники видят один и тот же игровой стол.</p>
 <label for="nick">ТВОЙ НИК</label><input id="nick" maxlength="18" placeholder="Как тебя называть?" autocomplete="nickname">
 <div class="grid2"><div><label for="roomInput">КОД КОМНАТЫ</label><input id="roomInput" maxlength="8" placeholder="Например, A7K2QX" autocapitalize="characters"></div><div><label>ФОРМАТ</label><input value="14 вопросов · 100–400 очков" disabled></div></div>
@@ -28,6 +82,13 @@ label{display:block;color:#b8d0be;font-size:11px;font-weight:800;letter-spacing:
 <section class="panel hidden" id="game"><div class="roomtop"><div><span class="badge" id="roundBadge">ВОПРОСЫ</span><h2 style="margin-top:8px" id="gameTitle">Выбирайте тему и стоимость</h2></div><div class="badge" id="turnStatus">ХОД ИГРЫ</div></div><div class="players" id="gamePlayers"></div><div id="boardWrap"><p class="hint">Выбери категорию и стоимость вопроса. Кто первым нажмёт «Я отвечаю», тот получает право ответа.</p><div class="board" id="board"></div></div><div id="questionWrap" class="hidden"><div class="badge" id="questionMeta"></div><div class="question" id="questionText"></div><div id="buzzWrap"><button class="primary buzz" id="buzz">Я отвечаю!</button></div><div class="status" id="answerStatus">Сначала нажми кнопку, чтобы получить право ответа.</div><div class="options hidden" id="options"></div><div class="buttons hidden" id="nextWrap"><button class="primary" id="next" style="width:100%">Следующий вопрос</button></div></div><div class="status" id="gameStatus">Удачи в игре!</div><div class="buttons"><button class="quiet" id="leave">Выйти из комнаты</button></div></section>
 <section class="panel hidden" id="finished"><span class="badge">ИГРА ОКОНЧЕНА</span><h2 id="winner" style="margin-top:12px;font-size:27px">Победа!</h2><p class="hint" id="winnerText"></p><button class="primary" id="again" style="width:100%">В новую игру</button></section>
 <p class="foot">Свояк Online · 5 категорий · 14 случайных вопросов · варианты ответов перемешиваются для каждой комнаты. Для игры на разных устройствах используется Supabase Realtime.</p>
+<section class="love-ending">
+<div class="kicker">И если ты долистала до сюда…</div>
+<div style="font-size:34px;margin-top:10px;color:#ff8db9">♥</div>
+<h2>Я тебя люблю,<br>Настя ❤️</h2>
+<p>Просто хотел, чтобы ты это знала. Ты — моё самое приятное исключение из всех правил.</p>
+<div class="heart-line">♡ ♥ ♡</div>
+</section>
 </main>
 <script>
 const $=id=>document.getElementById(id);
